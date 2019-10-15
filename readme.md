@@ -1,8 +1,9 @@
 # ❌⭕️ Tic Tac Toe Jam! ❌⭕️
 
 ## Introduction
+
 Access the game here: [Chai's tic tac toe](https://chai-ng.github.io/tic-tac-toe-jam/)
----
+
 ## Approach taken
 
 I wanted to re-invent the classic tic-tac-toe game, and add in a few cool new features such as:
@@ -22,9 +23,9 @@ I wanted to re-invent the classic tic-tac-toe game, and add in a few cool new fe
 5. Don't hold back - start building out those fun features!
 
 ### Technology used
----
+
 ## Installation instructions
 
 Navigate to my site to play this: [Chai's tic tac toe](https://chai-ng.github.io/tic-tac-toe-jam/)
----
+
 ## Backlog of features
