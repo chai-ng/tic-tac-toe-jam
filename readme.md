@@ -1,7 +1,6 @@
 # ❌⭕️ Tic Tac Toe Jam! ❌⭕️
----
-## Introduction
 
+## Introduction
 Access the game here: [Chai's tic tac toe](https://chai-ng.github.io/tic-tac-toe-jam/)
 ---
 ## Approach taken
