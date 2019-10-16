@@ -14,7 +14,7 @@ I wanted to re-invent the classic tic-tac-toe game, and add in a few cool new fe
 1. Setup _Trello project board_ to outline key tasks and requirements, prioritise them and have a home for my fun ideas 
 ![project-board-setup](https://github.com/chai-ng/tic-tac-toe-jam/blob/master/images/project-board-setup.png)
 
-2. Get inspired by other tic tac toe games out there and put the fun ideas on my backlog
+2. Get inspired by other tic tac toe games, and minimalist puzzle games out there and put the fun ideas on my backlog
 
 3. Wireframe out the flow of the game on _Figma_, including the fun features and carve out what is the 'MVP' equivalent
 ![figma-wireframes](https://github.com/chai-ng/tic-tac-toe-jam/blob/master/images/wireframe-flow.png)

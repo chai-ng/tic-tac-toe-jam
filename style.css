@@ -1,34 +1,56 @@
 html {
     width: 100%;
     height: 100%;
+    margin: 0;
+    padding: 0;
 }
 
 body {
-    background-color: mistyrose;
+    background-color: #8EC5FC;
+    background-image: linear-gradient(62deg, #8EC5FC 0%, #E0C3FC 100%);
+    font-family: 'Quicksand', 'Open Sans';
+    margin: 0;
+    padding: 0;
 }
 
 main {
     display: flex;
     justify-content: center;
+    height: 100%;
+    z-index: 0;
 }
 
 .player-profile {
     width: 20%;
-    border: 1px black solid;
+    padding: 2%;
+    background-color: rgba(255, 255, 255, 0);
+    transition: background-color 0.5s ease-in-out 0.5s;
+    transition: box-shadow 0.5s ease-in-out;
+    font-size: 80%;
+    z-index: 0;
+}
+
+.right {
+    border-top-left-radius: 4px;
+    text-align: right;
+}
+
+.left {
+    border-top-right-radius: 4px;
+}
+
+.current-player {
+    background-color: rgba(255, 255, 255, 1.0);
+    box-shadow: 2px 2px 30px rgba(0, 0, 0, 0.5);
 }
 
 .gameboard {
     width: 60%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    align-items: center;
     overflow: scroll;
-}
-
-/* make this stick to the bottom */
-.counter {
-    position: sticky;
-    bottom: 0px;
+    padding: 5%;
 }
 
 .game-cell {
@@ -40,9 +62,40 @@ main {
     display: inline-flex;
     justify-content: center;
     align-items: center;
+    transition: background-color 0.2s ease-in-out;
 }
 
 .game-cell:hover {
     background-color: gainsboro;
-    transition: background-color 0.2s ease-in-out;
+}
+
+.game-row {
+    display: flex;
+    justify-content: center;
+    margin: 0px;
+    width: 100%;
+}
+
+.winning-cell {
+    background-color: purple;
+    color: white;
+}
+
+.winning-cell:hover {
+    background-color: purple;
+    color: white;
+}
+
+.bottom-bar {
+    position: fixed;
+    width: 100%;
+    bottom: 0px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 5;
+    
+    background-color: rgba(255, 255, 255, 1);
+    box-shadow: 2px 2px 20px rgba(0, 0, 0, 0.5);
 }

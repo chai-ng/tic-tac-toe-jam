@@ -4,19 +4,21 @@ var rounds = 1;
 var currentPlayer = 0; // Index number of whose turn it currently is
 var players = [{
         name: 'Player 1',
-        token: '1',
+        token: 'X',
         score: 0
     },
     {
         name: 'Player 2',
-        token: '2',
+        token: 'O',
         score: 0
     }
 ]
 var board = [];
+var winningSet = [];
 
 var gameBoard = document.querySelector('.gameboard');
 var gameCells = document.querySelectorAll('.game-cell');
+var playerProfiles = document.querySelectorAll('.player-profile');
 var btnExitGame = document.querySelector('.btn-exit-game');
 var btnNewGame = document.querySelector('.btn-new-game');
 
@@ -50,11 +52,13 @@ var generateGame = function (boardSize) {
 var determineOrder = function () {
     currentPlayer = Math.round(Math.random());
     console.log(`${players[currentPlayer].name} goes first!`);
+    whoseTurn();
 }
 
 // 3. Keep track of who's turn is it, highlight the user, and prompt if no input is received
-var gameTurn = function () {
-
+var whoseTurn = function () {
+    playerProfiles[currentPlayer].classList.add('current-player');
+    playerProfiles[Number(!currentPlayer)].classList.remove('current-player');
 }
 
 // Check if cell is empty
@@ -62,17 +66,36 @@ var isEmpty = function (cell) {
     return cell.length === 0;
 }
 
+// Check if gameboard is filled
+var isFilled = function () {
+    var result = true;
+    gameCells.forEach(function (x) {
+        if (isEmpty(x.innerHTML)) {
+            result = false;
+        }
+    })
+    return result
+}
+
 // 4. Insert a token where the user has clicked
 var insertToken = function (event) {
     // Check if empty before allowing to insert element
     if (isEmpty(event.target.innerHTML)) {
         event.target.innerHTML = players[currentPlayer].token;
-        // check for win conditions
+
+        // Check for win conditions
         if (checkWin()) {
-            // end the game with pop-up box
+            // TODO: end the game with pop-up box
         } else {
-            currentPlayer = Number(!currentPlayer);
-            console.log(`It is ${players[currentPlayer].name}'s turn now`);
+
+            // Check if board is filled for a draw condition
+            if (isFilled()) {
+                console.log("It's a draw!");
+            } else {
+                currentPlayer = Number(!currentPlayer);
+                whoseTurn();
+                console.log(`It is ${players[currentPlayer].name}'s turn now`);
+            }
         }
     } else {
         console.log('Space is already filled, try again');
@@ -110,6 +133,11 @@ var checkRows = function () {
             result = true;
         }
         if (result) {
+            // append the winning row and their cols into the winningSet array
+            for (var col = 0; col < boardSize; col++) {
+                var winningCell = [row, col];
+                winningSet.push(winningCell);
+            }
             return result;
         }
     }
@@ -124,13 +152,18 @@ var checkCols = function () {
                 result = false;
                 break;
             }
-            if (board[row][col] != board[row][0]) {
+            if (board[row][col] != board[0][col]) {
                 result = false;
                 break;
             }
             result = true;
         }
         if (result) {
+            // append the winning row and their cols into the winningSet array
+            for (var row = 0; row < boardSize; row++) {
+                var winningCell = [row, col];
+                winningSet.push(winningCell);
+            }
             return result;
         }
     }
@@ -154,6 +187,11 @@ var checkDiagonals = function () {
     }
 
     if (result) {
+        // append the winning row and their cols into the winningSet array
+        for (var diag = 0; diag < boardSize; diag++) {
+            var winningCell = [diag, diag];
+            winningSet.push(winningCell);
+        }
         return result;
     }
 
@@ -164,31 +202,52 @@ var checkDiagonals = function () {
             result = false;
             break;
         }
-        if (board[row][col] != board[boardSize-1][0]) {
+        if (board[row][col] != board[boardSize - 1][0]) {
             result = false;
             break;
         }
         result = true;
     }
+    if (result) {
+        // append the winning row and their cols into the winningSet array
+        for (var col = 0; col < boardSize; col++) {
+            var row = boardSize - 1 - col;
+            var winningCell = [row, col];
+            winningSet.push(winningCell);
+        }
+        return result;
+    }
+
     return result;
+}
+
+// Highlight the winning row
+var highlightWin = function (coordinates) {
+    var row = coordinates[0];
+    var col = coordinates[1];
+    var index = row * boardSize + col;
+    gameCells[index].classList.add('winning-cell');
 }
 
 var checkWin = function () {
     checkBoard();
     if (checkRows() || checkCols() || checkDiagonals()) {
         console.log(`${players[currentPlayer].name} is the winner!`)
+        winningSet.forEach(highlightWin);
         return true;
     }
 }
 
-// 7. Prompt for new game
+// Initialise base game
 generateGame(boardSize);
 determineOrder();
+
+// 7. Prompt for new game
 btnNewGame.addEventListener('click', function () {
     generateGame(boardSize);
+    determineOrder();
 });
 
 btnExitGame.addEventListener('click', function () {
     gameBoard.innerHTML = "";
 })
-
