@@ -23,9 +23,11 @@ var btnExitGame = document.querySelector('.btn-exit-game');
 var btnNewGame = document.querySelector('.btn-new-game');
 
 // 1. Generate game board based on settings (gameboard size, token, number of rounds)
-var generateGame = function (boardSize) {
-    // Reset the page
+var generateRound = function (boardSize) {
+    // Reset the page and the game
     gameBoard.innerHTML = "";
+    board = [];
+    winningSet = [];
 
     // Create each row and append to gameboard
     for (var row = 0; row < boardSize; row++) {
@@ -55,7 +57,7 @@ var determineOrder = function () {
     whoseTurn();
 }
 
-// 3. Keep track of who's turn is it, highlight the user, and prompt if no input is received
+// Keep track of who's turn is it and highlight the user
 var whoseTurn = function () {
     playerProfiles[currentPlayer].classList.add('current-player');
     playerProfiles[Number(!currentPlayer)].classList.remove('current-player');
@@ -77,7 +79,7 @@ var isFilled = function () {
     return result
 }
 
-// 4. Insert a token where the user has clicked
+// 3. Insert a token where the user has clicked
 var insertToken = function (event) {
     // Check if empty before allowing to insert element
     if (isEmpty(event.target.innerHTML)) {
@@ -102,7 +104,7 @@ var insertToken = function (event) {
     }
 }
 
-// 5. Retrieve the current gameboard in an array
+// 4. Check for current gameboard for a winning conditions and higlight the winning row
 var checkBoard = function () {
     // reset board
     board = [];
@@ -117,7 +119,7 @@ var checkBoard = function () {
     }
 }
 
-// 6. Check for winning conditions
+// Check rows for winning condition
 var checkRows = function () {
     var result = false;
     for (var row = 0; row < boardSize; row++) {
@@ -144,6 +146,7 @@ var checkRows = function () {
     return result;
 }
 
+// Check columns for winning conditions
 var checkCols = function () {
     var result = false;
     for (var col = 0; col < boardSize; col++) {
@@ -170,6 +173,7 @@ var checkCols = function () {
     return result;
 }
 
+// Check diagonals for winning conditions
 var checkDiagonals = function () {
     var result = false;
 
@@ -221,7 +225,7 @@ var checkDiagonals = function () {
     return result;
 }
 
-// Highlight the winning row
+// Highlight the winning set of cells
 var highlightWin = function (coordinates) {
     var row = coordinates[0];
     var col = coordinates[1];
@@ -229,6 +233,7 @@ var highlightWin = function (coordinates) {
     gameCells[index].classList.add('winning-cell');
 }
 
+// Master function
 var checkWin = function () {
     checkBoard();
     if (checkRows() || checkCols() || checkDiagonals()) {
@@ -238,13 +243,21 @@ var checkWin = function () {
     }
 }
 
+// Initiate the game
+// Name the players
+
+// Create counter of number of rounds
+// For each round, record either win / lose / draw and show mini screenshot of the round, offer to download?
+// Once wins > Math.floor(rounds / 2) -> declare game winner
+// If all draws -> declare draw
+
 // Initialise base game
-generateGame(boardSize);
+generateRound(boardSize);
 determineOrder();
 
 // 7. Prompt for new game
 btnNewGame.addEventListener('click', function () {
-    generateGame(boardSize);
+    generateRound(boardSize);
     determineOrder();
 });
 
