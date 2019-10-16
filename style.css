@@ -1,3 +1,48 @@
+html {
+    width: 100%;
+    height: 100%;
+}
+
 body {
     background-color: mistyrose;
+}
+
+main {
+    display: flex;
+    justify-content: center;
+}
+
+.player-profile {
+    width: 20%;
+    border: 1px black solid;
+}
+
+.gameboard {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: scroll;
+}
+
+/* make this stick to the bottom */
+.counter {
+    position: sticky;
+    bottom: 0px;
+}
+
+.game-cell {
+    width: 100px;
+    height: 100px;
+    border: 1px solid black;
+    background-color: white;
+    margin: 0px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.game-cell:hover {
+    background-color: gainsboro;
+    transition: background-color 0.2s ease-in-out;
 }
