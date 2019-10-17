@@ -85,6 +85,10 @@ main {
     transform: translateY(-5px);
 }
 
+.suggested-cell {
+    background-color: red;
+}
+
 .players {
     font-size: 3vh;
     display: flex;
@@ -97,7 +101,7 @@ main {
     height: fit-content;
     width: fit-content;
     align-self: flex-end;
-    z-index: 0;
+    z-index: 3;
     
     padding: 2% 5%;
     background-color: rgba(255, 255, 255, 0);
@@ -264,6 +268,19 @@ main {
     transition: color 0.3s ease-in-out;
 }
 
+.btn-suggest-move {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    padding: 2vh;
+    transition: color 0.3s ease-in-out;
+}
+
+.btn-suggest-move:hover {
+    color: purple;
+    transition: color 0.3s ease-in-out;
+}
+
 .btn-primary {
     margin-top: 2vh;
     padding: 2vh;
@@ -286,6 +303,7 @@ main {
     margin: 0px auto;
     width: 20%;
     height: 70%;
+    z-index: 3;
 }
 
 button {

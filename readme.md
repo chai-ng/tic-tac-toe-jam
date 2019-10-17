@@ -89,5 +89,8 @@ I wanted to encourage people to be incentivised to play the game
 
 2. Undo and suggestion functions\
 
-3. 'Tetris' tic-tac-toe\
-*Inspired by the other classic childhood game, I wanted to combine the time-sensitive nature of tetris with this game, to increase the level of difficulty for the player*
+3. 'Tetris' minMax bot\
+References:
+- https://github.com/Cledersonbc/tic-tac-toe-minimax/blob/master/README.md
+- https://medium.com/@alialaa/tic-tac-toe-with-javascript-es2015-ai-player-with-minimax-algorithm-59f069f46efa?source=bookmarks---------0-----------------------
+- 

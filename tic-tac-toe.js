@@ -14,13 +14,14 @@ var message = document.querySelector('.message');
 
 // HTML Buttons
 var btnExitGame = document.querySelector('.btn-exit-game');
+var btnSuggestMove = document.querySelector('.btn-suggest-move');
 var btnNewGame = document.querySelector('.btn-new-game');
 var btnPlayAgain = document.querySelector('.btn-play-again');
 var btnSelectRight = document.querySelectorAll('.select-right');
 var btnSelectLeft = document.querySelectorAll('.select-left');
 
 // Customisation options
-var tokens = [1,-1,'X', 'O', '❌', '⭕️', '🤩', '🥳'];
+var tokens = [1,-1,'X', 'O', '❌', '⭕️', '🤩', '🥳','😸','🐶'];
 
 // Game variables
 var boardSize = Number(gameOptions[0].innerHTML);
@@ -46,7 +47,7 @@ var players = [{
 var generateGame = function () {
     rounds = Number(gameOptions[1].innerHTML);
     currentRound = -1;
-    roundWinners = [];
+    winningPlayers = [];
     players[0].token = gameOptions[2].innerHTML;
     players[1].token = gameOptions[3].innerHTML;
     playerTokens.forEach(function (x, i) {
@@ -153,12 +154,20 @@ var insertToken = function (event) {
     if (isEmpty(event.target.innerHTML)) {
         event.target.innerHTML = players[currentPlayer].token;
         message.innerHTML = '';
+        event.target.classList.remove('suggested-cell');
 
         // Check for win conditions
         if (checkWin(checkBoard())) {
             winningPlayers.push(currentPlayer);
+            winningSet.forEach(highlightWin);
+            message.innerHTML = `${players[currentPlayer].name} wins the round!`;
+            btnPlayAgain.style.display = 'block';
+            updateCounter('win');
             checkGameWinner();
         } else if (checkDraw(checkBoard())) {
+            message.innerHTML = "This round is a draw!";
+            btnPlayAgain.style.display = 'block';
+            updateCounter('draw');
             checkGameWinner();
         } else {
             currentPlayer = Number(!currentPlayer);
@@ -187,7 +196,7 @@ var checkBoard = function () {
 }
 
 // Check rows for winning condition
-var checkRows = function (currentBoard) {
+var checkRows = function (currentBoard, storeResults = true) {
     var result = false;
     for (var row = 0; row < boardSize; row++) {
         for (var col = 0; col < boardSize; col++) {
@@ -201,7 +210,7 @@ var checkRows = function (currentBoard) {
             }
             result = true;
         }
-        if (result) {
+        if (result && storeResults) {
             // append the winning row and their cols into the winningSet array
             for (var col = 0; col < boardSize; col++) {
                 var winningCell = [row, col];
@@ -214,7 +223,7 @@ var checkRows = function (currentBoard) {
 }
 
 // Check columns for winning conditions
-var checkCols = function (currentBoard) {
+var checkCols = function (currentBoard, storeResults = true) {
     var result = false;
     for (var col = 0; col < boardSize; col++) {
         for (var row = 0; row < boardSize; row++) {
@@ -228,7 +237,7 @@ var checkCols = function (currentBoard) {
             }
             result = true;
         }
-        if (result) {
+        if (result && storeResults) {
             // append the winning row and their cols into the winningSet array
             for (var row = 0; row < boardSize; row++) {
                 var winningCell = [row, col];
@@ -241,7 +250,7 @@ var checkCols = function (currentBoard) {
 }
 
 // Check diagonals for winning conditions
-var checkDiagonals = function (currentBoard) {
+var checkDiagonals = function (currentBoard, storeResults = true) {
     var result = false;
 
     // A. Check for normal diagonal top left to bottom right
@@ -257,7 +266,7 @@ var checkDiagonals = function (currentBoard) {
         result = true;
     }
 
-    if (result) {
+    if (result && storeResults) {
         // append the winning row and their cols into the winningSet array
         for (var diag = 0; diag < boardSize; diag++) {
             var winningCell = [diag, diag];
@@ -279,7 +288,7 @@ var checkDiagonals = function (currentBoard) {
         }
         result = true;
     }
-    if (result) {
+    if (result && storeResults) {
         // append the winning row and their cols into the winningSet array
         for (var col = 0; col < boardSize; col++) {
             var row = boardSize - 1 - col;
@@ -301,12 +310,8 @@ var highlightWin = function (coordinates) {
 }
 
 // Master function
-var checkWin = function (currentBoard) {
-    if (checkRows(currentBoard) || checkCols(currentBoard) || checkDiagonals(currentBoard)) {
-        winningSet.forEach(highlightWin);
-        message.innerHTML = `${players[currentPlayer].name} wins the round!`;
-        btnPlayAgain.style.display = 'block';
-        updateCounter('win');
+var checkWin = function (currentBoard, storeResults = true) {
+    if (checkRows(currentBoard, storeResults) || checkCols(currentBoard, storeResults) || checkDiagonals(currentBoard,storeResults)) {
         return true;
     } else {
         return false;
@@ -315,9 +320,6 @@ var checkWin = function (currentBoard) {
 
 var checkDraw = function(currentBoard) {
     if (isFilled(checkBoard())) {
-        message.innerHTML = "This round is a draw!";
-        btnPlayAgain.style.display = 'block';
-        updateCounter('draw');
         return true;
     }
     return false;
@@ -407,90 +409,56 @@ btnPlayAgain.addEventListener('click', function () {
     btnPlayAgain.style.display = 'none';
 })
 
-// Prune tree method:
-var previousMoves = []; // For each move made, append the 'index' of gameCells to the previous moves
-var firstPlayer = 0 // Remember who started, to inform who is the winner / loser perspective to adopt
-var createGameTree = function (board) {
-    var gameTree = [];
-    gameTree[i].nextMove = createGameTree(gameTree[i].currentBoard);
-    // Use either the previousMoves or the currentBoard to find where we are in the `gameTree`
-    // Recursively loop through the next few steps to find the first shortest moves to a win, using the 'breadth-first' method
-    // Start with an empty array
-    // For number of empty spaces (depth)
-    // Loop through each empty space and put in the current token (build each branch)
-    // Find empty space
-    // Put in current token
-    // Swap players
-    // Create new layer and go there
-    // For each empty space, put in the current token (go deep in a single branch)
-    // Until there is a draw or win scenario
-    // Then go to the next branch
-}
-
-// Min max method:
-// Put in the CurrentPlayer
-var nextBestMove = function (board, depth, player) {
-    // if the current Player is the same as the active Player, then it's a win
-    debugger;
-    // Initialise the winning condition
-    if (player == currentPlayer) { 
-        var best = [-1, -1, 0]
+// Min max Tic Tac Toe bot:
+var nextBestMove = function (currentBoard, depth, player, playerSolving) {
+    // Initialise the return array, with players starting from their worse score, so that the 'best outcome' can be overridden by even a draw score
+    if (player == playerSolving) { 
+        var best = [-1, -1, -99]; // Arbitrarily high number that can be overridden by a 'draw' = 0
     } else {
-        var best = [-1, -1, 0]
+        var best = [-1, -1, 99];
     }
     
     // If there is a winning condition, evaluate if that is a good or bad thing for the currentPlayer
-    if (checkWin(board) && player == currentPlayer) {
-        var score = -1;
+    if (checkWin(currentBoard, false) && player == playerSolving) {
+        // previous winning move was not amde by the player in this scenario, therefore has a negative impact on winning
+        // where the depth is 0
+        var score = boardSize+depth; 
         return [-1, -1, score];
-    } else if (checkWin(board)) {
-        var score = 1;
+    } else if (checkWin(currentBoard, false)) {
+        var score = -boardSize-depth;
         return [-1, -1, score];
-    } else if (depth == 0) {
+    } else if (checkDraw(currentBoard)) { // check for a draw
         var score = 0;
         return [-1, -1, score];
     }
     
     // If there isn't a 'win' or a 'draw' keep looping through the empty cells
-    var possibleMoves = emptyCells(board);
+    var possibleMoves = emptyCells(currentBoard);
     for (var index = 0; index < possibleMoves.length; index++) {
         cell = possibleMoves[index];
         var x = cell[0]
         var y = cell[1];
-        board[x][y] = players[player].token;
-        var outcome = nextBestMove(board, depth - 1, Number(!player));
-        board[x][y] = ''; // undo the move
+        currentBoard[x][y] = players[player].token;
+        var outcome = nextBestMove(currentBoard, depth - 1, Number(!player));
+        currentBoard[x][y] = ''; // undo the move
         outcome[0] = x;
         outcome[1] = y;
  
         // If the player in this scenario is the same as the active player, then pick the outcome with the highest score, otherwise, pick 
-        if (player == currentPlayer) {
+        if (player == playerSolving) {
+            // Maximise, where you want to pick the highest possible score
             if (outcome[2] > best[2]) {
                 best = outcome;
         }
         } else {
+            // Minimise, because negative scores are how they win
             if (outcome[2] < best[2]) {
                 best = outcome;
             }
         }
-    
-        return best;
-
-        // Depth is the number of moves left to make
-        // Define who you are optimising for
-        // Check that the game is not already completed or a draw
-        // Loop through each empty cell and...
-        // Re-assign the coordinates of the first empty cell as the current player
-        // Find the score of that move
-
-        // Check if the player is the same
-        // If yes, then check if this produces a higher score than the current best
-        // If higher score, then store as the best
-        // If not, then check if this produces a lower score than the current best
-        // If lower score, then store as the best
-
-        // Return the coordinates of that move made
     }
+    
+    return best;
 }
 
 var emptyCells = function (currentBoard) {
@@ -518,21 +486,10 @@ var coordinatesToIndex = function (coordinates) {
     return index;
 }
 
-// // Example tree
-//  var gameTree = [{
-//     moveMade: 0,
-//     playerMoved: 'X',
-//     currentBoard: [['X','',''],['','',''],['','','']],
-//     win: false,
-//     draw: false,
-//     nextMove: [
-//         {
-//             moveMade: 1,
-//             playerMoved: 'O',
-//             currentBoard:[['X','O',''],['','',''],['','','']],
-//             win: false,
-//             draw: false,
-//             nextMove: []
-//         },
-//     ]
-//  }]
+btnSuggestMove.addEventListener('click', function() {
+    var coordinates = nextBestMove(checkBoard(),emptyCells(checkBoard()).length,currentPlayer,currentPlayer);
+    console.log(coordinates);
+    coordinates.pop();
+    var index = coordinatesToIndex(coordinates);
+    gameCells[index].classList.add('suggested-cell');
+})

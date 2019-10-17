@@ -1,0 +1,4 @@
+Testing scenarios
+1. Minimise for a draw
+currentBoard: [["", "X", ""],["", "", "X"],["O", "O", "X"]]
+currentPlayer: "X" or 0
