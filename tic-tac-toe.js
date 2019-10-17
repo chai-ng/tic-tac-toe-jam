@@ -434,12 +434,13 @@ var nextBestMove = function (currentBoard, depth, player, playerSolving) {
     
     // If there isn't a 'win' or a 'draw' keep looping through the empty cells
     var possibleMoves = emptyCells(currentBoard);
+    // debugger;
     for (var index = 0; index < possibleMoves.length; index++) {
         cell = possibleMoves[index];
         var x = cell[0]
         var y = cell[1];
         currentBoard[x][y] = players[player].token;
-        var outcome = nextBestMove(currentBoard, depth - 1, Number(!player));
+        var outcome = nextBestMove(currentBoard, depth - 1, Number(!player)); // How to include current Player in this...
         currentBoard[x][y] = ''; // undo the move
         outcome[0] = x;
         outcome[1] = y;
