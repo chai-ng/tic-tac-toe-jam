@@ -14,6 +14,7 @@ var message = document.querySelector('.message');
 
 // HTML Buttons
 var btnExitGame = document.querySelector('.btn-exit-game');
+var btnUndoMove = document.querySelector('.btn-undo-move');
 var btnSuggestMove = document.querySelector('.btn-suggest-move');
 var btnNewGame = document.querySelector('.btn-new-game');
 var btnPlayAgain = document.querySelector('.btn-play-again');
@@ -26,6 +27,7 @@ var tokens = [1,-1,'X', 'O', '❌', '⭕️', '🤩', '🥳','😸','🐶'];
 // Game variables
 var boardSize = Number(gameOptions[0].innerHTML);
 var board = [];
+var roundLog = [];
 var rounds = Number(gameOptions[1].innerHTML);
 var winningPlayers = [];
 var winningSet = [];
@@ -61,6 +63,7 @@ var generateRound = function (boardSize) {
     gameBoard.innerHTML = "";
     board = [];
     winningSet = [];
+    roundLog = [];
     boardSize = Number(gameOptions[0].innerHTML);
     rounds -= 1;
     currentRound += 1;
@@ -74,6 +77,7 @@ var generateRound = function (boardSize) {
         for (var cell = 0; cell < boardSize; cell++) {
             var gameCell = document.createElement('div');
             gameCell.classList = 'game-cell';
+            gameCell.setAttribute('data-index',row*boardSize+cell);
             gameRow.appendChild(gameCell);
         }
         gameBoard.appendChild(gameRow);
@@ -153,8 +157,12 @@ var insertToken = function (event) {
     // Check if empty before allowing to insert element
     if (isEmpty(event.target.innerHTML)) {
         event.target.innerHTML = players[currentPlayer].token;
+        roundLog.push(event.target.getAttribute('data-index'));
         message.innerHTML = '';
-        event.target.classList.remove('suggested-cell');
+
+        if (document.querySelector('.suggested-cell') != null) {
+            document.querySelector('.suggested-cell').classList.remove('suggested-cell');
+        }
 
         // Check for win conditions
         if (checkWin(checkBoard())) {
@@ -172,7 +180,6 @@ var insertToken = function (event) {
         } else {
             currentPlayer = Number(!currentPlayer);
             whoseTurn();
-
         }
     } else {
         message.innerHTML = 'Space is already filled, try again';
@@ -440,7 +447,7 @@ var nextBestMove = function (currentBoard, depth, player, playerSolving) {
         var x = cell[0]
         var y = cell[1];
         currentBoard[x][y] = players[player].token;
-        var outcome = nextBestMove(currentBoard, depth - 1, Number(!player)); // How to include current Player in this...
+        var outcome = nextBestMove(currentBoard, depth - 1, Number(!player),playerSolving); // How to include current Player in this...
         currentBoard[x][y] = ''; // undo the move
         outcome[0] = x;
         outcome[1] = y;
@@ -487,10 +494,35 @@ var coordinatesToIndex = function (coordinates) {
     return index;
 }
 
-btnSuggestMove.addEventListener('click', function() {
-    var coordinates = nextBestMove(checkBoard(),emptyCells(checkBoard()).length,currentPlayer,currentPlayer);
-    console.log(coordinates);
-    coordinates.pop();
-    var index = coordinatesToIndex(coordinates);
-    gameCells[index].classList.add('suggested-cell');
-})
+var undoMove = function() {
+    var prevMove = roundLog.pop();
+    gameCells[prevMove].innerHTML = "";
+    currentPlayer = Number(!currentPlayer);
+}
+
+var selectRandomCell = function() {
+    var emptyCellArray = emptyCells(checkBoard());
+    var randomCoordinates = emptyCellArray[Math.round(Math.random() * emptyCellArray.length)]
+    gameCells[coordinatesToIndex(randomCoordinates)].classList.add('suggested-cell');
+}
+
+btnSuggestMove.addEventListener('click', selectRandomCell);
+
+// btnSuggestMove.addEventListener('click', function() {
+//     if (emptyCells(checkBoard()) === (boardSize * boardSize)) {
+//         selectRandomCell();
+//         return;
+//     }
+//     var coordinates = nextBestMove(checkBoard(),emptyCells(checkBoard()).length,currentPlayer,currentPlayer);
+//     console.log(coordinates);
+//     if (coordinates[0] === -1) {
+//         selectRandomCell();
+//         return;
+//     } else {
+//         coordinates.pop();
+//         var index = coordinatesToIndex(coordinates);
+//         gameCells[index].classList.add('suggested-cell');
+//     }
+// })
+
+btnUndoMove.addEventListener('click', undoMove);

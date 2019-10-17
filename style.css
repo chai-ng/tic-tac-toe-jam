@@ -50,7 +50,7 @@ main {
     cursor: pointer;
 }
 
-.game-cell:hover {
+.game-cell:hover, .suggested-cell {
     transform: translateY(-2px);
     transition: transform 0.5s ease-in-out;
     transition: box-shadow 0.5s ease-in-out;
@@ -83,10 +83,6 @@ main {
     background-color: rgb(244, 228, 244);
     box-shadow: 0px 5px 10px 2px rgba(0, 0, 0, 0.5);
     transform: translateY(-5px);
-}
-
-.suggested-cell {
-    background-color: red;
 }
 
 .players {
@@ -257,27 +253,26 @@ main {
     border: none;
 }
 
-.btn-exit-game {
-    position: absolute;
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+}
+
+.btn-secondary {
+    position: relative;
     padding: 2vh;
     transition: color 0.3s ease-in-out;
 }
 
-.btn-exit-game:hover {
+.btn-secondary:hover {
     color: purple;
     transition: color 0.3s ease-in-out;
 }
 
 .btn-suggest-move {
-    position: absolute;
+    position: relative;
     right: 0px;
     top: 0px;
-    padding: 2vh;
-    transition: color 0.3s ease-in-out;
-}
-
-.btn-suggest-move:hover {
-    color: purple;
     transition: color 0.3s ease-in-out;
 }
 
