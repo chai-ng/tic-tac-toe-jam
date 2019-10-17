@@ -82,7 +82,6 @@ main {
 .winning-cell:hover {
     background-color: rgb(244, 228, 244);
     box-shadow: 0px 5px 10px 2px rgba(0, 0, 0, 0.5);
-    color: white;
     transform: translateY(-5px);
 }
 
@@ -147,7 +146,7 @@ main {
 }
 
 .counter {
-    font-size: 1.5vh;
+    font-size: 2vh;
     font-weight: 800;
     text-align: center;
     color: white;
@@ -284,6 +283,7 @@ main {
 }
 
 button {
+    font-size: 3vh;
     font-weight: 600;
     color: rgba(43, 5, 60, 0.40);
     border: none;
