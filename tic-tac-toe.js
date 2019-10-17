@@ -1,33 +1,61 @@
 // 0. Setup key variables
-var boardSize = 3;
-var rounds = 1;
+// HTML DOM elements
+var gameBoard = document.querySelector('.gameboard');
+var gameCells = document.querySelectorAll('.game-cell');
+var playerProfiles = document.querySelectorAll('.player-profile');
+var modal = document.querySelector('.modal');
+var modalHeader = document.querySelector('.modal-header');
+var modalParagraph = document.querySelector('.modal-paragraph');
+var gameOptions = document.querySelectorAll('.selection');
+var counter = document.querySelector('.counter');
+var roundCounters = document.querySelectorAll('.single-round');
+var message = document.querySelector('.message');
+
+// HTML Buttons
+var btnExitGame = document.querySelector('.btn-exit-game');
+var btnNewGame = document.querySelector('.btn-new-game');
+var btnPlayAgain = document.querySelector('.btn-play-again');
+var btnSelectRight = document.querySelectorAll('.select-right');
+var btnSelectLeft = document.querySelectorAll('.select-left');
+
+// 
+var boardSize = Number(gameOptions[0].innerHTML);
+var board = [];
+var rounds = Number(gameOptions[1].innerHTML);
+var winningPlayers = [];
+var winningSet = [];
+var currentRound = -1;
 var currentPlayer = 0; // Index number of whose turn it currently is
 var players = [{
         name: 'Player 1',
-        token: 'X',
+        token: gameOptions[2].innerHTML,
         score: 0
     },
     {
         name: 'Player 2',
-        token: 'O',
+        token: gameOptions[3].innerHTML,
         score: 0
     }
 ]
-var board = [];
-var winningSet = [];
-
-var gameBoard = document.querySelector('.gameboard');
-var gameCells = document.querySelectorAll('.game-cell');
-var playerProfiles = document.querySelectorAll('.player-profile');
-var btnExitGame = document.querySelector('.btn-exit-game');
-var btnNewGame = document.querySelector('.btn-new-game');
 
 // 1. Generate game board based on settings (gameboard size, token, number of rounds)
+var generateGame = function() {
+    rounds = Number(gameOptions[1].innerHTML);
+    currentRound = -1;
+    roundWinners = [];
+    players[0].token = gameOptions[2].innerHTML;
+    players[1].token = gameOptions[3].innerHTML;
+    generateCounter();
+}
+
 var generateRound = function (boardSize) {
     // Reset the page and the game
     gameBoard.innerHTML = "";
     board = [];
     winningSet = [];
+    boardSize = Number(gameOptions[0].innerHTML);
+    rounds -= 1;
+    currentRound += 1;
 
     // Create each row and append to gameboard
     for (var row = 0; row < boardSize; row++) {
@@ -48,12 +76,44 @@ var generateRound = function (boardSize) {
     gameCells.forEach(function (x) {
         x.addEventListener('click', insertToken);
     })
+
+    determineOrder();
+    highlightCounter();
+}
+
+// Create counter based on number of rounds
+var generateCounter = function() {
+    for (var round = 0; round < rounds; round++) {
+        var circle = document.createElement('div');
+        circle.classList = 'single-round';
+        counter.appendChild(circle);
+    }
+    roundCounters = document.querySelectorAll('.single-round');
+}
+
+// Update the winning round
+var updateCounter = function(outcome) {
+    if (outcome == 'win') {
+        roundCounters[currentRound].innerHTML = players[currentPlayer].token;
+    } else {
+        roundCounters[currentRound].classList.add('draw-round');
+    }
+    roundCounters[currentRound].classList.remove('current-round');
+    roundCounters[currentRound].classList.add('completed-round');
+}
+
+// Select next counter as next round
+var highlightCounter = function() {
+    if (currentRound == 0) {
+        roundCounters[currentRound].classList.add('current-round');
+    } else {
+        roundCounters[currentRound].classList.add('current-round');
+    }
 }
 
 // 2. Determine who goes first and their respective tokens
 var determineOrder = function () {
     currentPlayer = Math.round(Math.random());
-    console.log(`${players[currentPlayer].name} goes first!`);
     whoseTurn();
 }
 
@@ -84,23 +144,17 @@ var insertToken = function (event) {
     // Check if empty before allowing to insert element
     if (isEmpty(event.target.innerHTML)) {
         event.target.innerHTML = players[currentPlayer].token;
+        message.innerHTML = '';
 
         // Check for win conditions
         if (checkWin()) {
-            // TODO: end the game with pop-up box
+            checkGameWinner();
         } else {
-
-            // Check if board is filled for a draw condition
-            if (isFilled()) {
-                console.log("It's a draw!");
-            } else {
-                currentPlayer = Number(!currentPlayer);
-                whoseTurn();
-                console.log(`It is ${players[currentPlayer].name}'s turn now`);
-            }
+            currentPlayer = Number(!currentPlayer);
+            whoseTurn();
         }
     } else {
-        console.log('Space is already filled, try again');
+        message.innerHTML = 'Space is already filled, try again';
     }
 }
 
@@ -237,30 +291,83 @@ var highlightWin = function (coordinates) {
 var checkWin = function () {
     checkBoard();
     if (checkRows() || checkCols() || checkDiagonals()) {
-        console.log(`${players[currentPlayer].name} is the winner!`)
         winningSet.forEach(highlightWin);
+        message.innerHTML = `${players[currentPlayer].name} wins the round!`;
+        btnPlayAgain.style.display = 'block';
+        updateCounter('win');
         return true;
+    } else if (isFilled()) {
+        message.innerHTML = "This round is a draw!";
+        btnPlayAgain.style.display = 'block';
+        updateCounter('draw');
+        return true;
+    } else {
+        return false;
     }
 }
 
-// Initiate the game
-// Name the players
+// Declare winner by opening up a modal
+var openModal = function () {
+    modal.style.display = "block";
+}
 
-// Create counter of number of rounds
-// For each round, record either win / lose / draw and show mini screenshot of the round, offer to download?
-// Once wins > Math.floor(rounds / 2) -> declare game winner
-// If all draws -> declare draw
+var closeModal = function () {
+    modal.style.display = "none";
+}
 
-// Initialise base game
-generateRound(boardSize);
-determineOrder();
+var checkGameWinner = function () {
+    if (rounds > 0) {
+        winningPlayers.push(currentPlayer);
+        btnPlayAgain.innerHTML = 'Next round';
+    } else {
+        winningPlayers.push(currentPlayer);
+        if (winningPlayers.filter(function(number) {
+            return number == 0;
+        }).length > winningPlayers.length/2) {
+            message.innerHTML += " Player 1 wins the game!"
+        } else {
+            message.innerHTML += " Player 2 wins the game!"
+        }
+        btnPlayAgain.innerHTML = 'Play again';
+    }
+}
 
-// 7. Prompt for new game
+// Allow players to change the number of rounds
+var plusOne = function (event) {
+    event.target.previousElementSibling.innerHTML = Number(event.target.previousElementSibling.innerHTML) + 1;
+}
+
+var minusOne = function (event) {
+    event.target.nextElementSibling.innerHTML = Number(event.target.nextElementSibling.innerHTML) - 1;
+}
+
+btnSelectRight.forEach(function (x) {
+    x.addEventListener('click', plusOne);
+})
+
+btnSelectLeft.forEach(function (x) {
+    x.addEventListener('click', minusOne);
+})
+
 btnNewGame.addEventListener('click', function () {
+    generateGame();
     generateRound(boardSize);
-    determineOrder();
+    closeModal();
 });
 
 btnExitGame.addEventListener('click', function () {
-    gameBoard.innerHTML = "";
+    generateRound(boardSize);
+    openModal();
+})
+
+btnPlayAgain.addEventListener('click', function () {
+    if (rounds > 0) {
+        generateRound(boardSize);
+
+    } else {
+        counter.innerHTML = ""
+        openModal();
+    }
+    message.innerHTML = "";
+    btnPlayAgain.style.display = 'none';
 })

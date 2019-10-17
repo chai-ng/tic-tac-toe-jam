@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,21 +10,73 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Quicksand">
 </head>
+
 <body>
+    <button class="btn-exit-game">Exit Game</button>
     <main>
         <div class="gameboard"></div>
     </main>
+    <div class="modal">
+        <div class="modal-content">
+            <div class="modal-header">Welcome to Tic Tac Jam</div>
+            <div class="modal-paragraph">A minimalist, lo-fi inspired game</div>
+            <div class="modal-customisations">
+                <div class="options">
+                    <div class="option-title">Board Size</div>
+                    <div class="option-selection">
+                        <button class="select-left"><</button>
+                        <span class="selection">3</span>
+                        <button class="select-right">></button>
+                    </div>
+                </div>
+                <div class="options">
+                    <div class="option-title">No of Rounds</div>
+                    <div class="option-selection">
+                            <button class="select-left"><</button>
+                            <span class="selection">1</span>
+                            <button class="select-right">></button>
+                    </div>
+                </div>
+                <div class="options">
+                    <div class="option-title">P1 Token</div>
+                    <div class="option-selection">
+                            <button class="select-left"><</button>
+                            <span class="selection">X</span>
+                            <button class="select-right">></button>
+                    </div>
+                </div>
+                <div class="options">
+                    <div class="option-title">P2 Token</div>
+                    <div class="option-selection">
+                            <button class="select-left"><</button>
+                            <span class="selection">O</span>
+                            <button class="select-right">></button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-primary btn-new-game">Start Game</button>
+            </div>
+        </div>
+    </div>
     <div class="players">
-        <div class="player-profile left">Player 1</div>
-        <div class="player-profile right">Player 2</div>
+        <div class="player-profile left">
+            <span class="player-name">Player 1</span>
+            <span class="player-token">X</span>
+        </div>
+        <div class="player-profile right">
+            <span class="player-name">Player 2</span>
+            <span class="player-token">O</span>
+        </div>
     </div>
     <div class="bottom-bar">
-        <div class="counter">Round X of X</div>
-        <div class="buttons">
-            <button class="btn-exit-game">Exit Game</button>
-            <button class="btn-new-game">New Game</button>
+        <div class="counter"></div>
+        <div class="message-board">
+            <span class="message"></span>
+            <button class="btn-primary btn-play-again">Play again</button>
         </div>
     </div>
     <script src="tic-tac-toe.js"></script>
 </body>
+
 </html>
