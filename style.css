@@ -230,9 +230,14 @@ main {
 
 @media only screen and (max-width: 768px) {
     .options {
-        width: 50%;
+        width: 40%;
         padding: 15px;
     }
+}
+
+.option {
+    display: flex;
+    justify-content: center;
 }
 
 .option-title {
