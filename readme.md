@@ -1,6 +1,7 @@
 # ❌⭕️ Tic Tac Toe Jam! ❌⭕️
 
 ## Introduction
+Hello! As part of my General Assembly Software Engineering Immersive, our first assignment is to build a Tic Tac Toe game.
 
 Access the game here: [Chai's tic tac toe](https://chai-ng.github.io/tic-tac-toe-jam/)
 
@@ -15,16 +16,21 @@ I wanted to re-invent the classic tic-tac-toe game, and add in a few cool new fe
 ![project-board-setup](https://github.com/chai-ng/tic-tac-toe-jam/blob/master/images/project-board-setup.png)
 
 2. Get inspired by other tic tac toe games, and minimalist puzzle games out there and put the fun ideas on my backlog
-![figma-inspiration-board]
+![figma-inspiration-board](https://github.com/chai-ng/tic-tac-toe-jam/blob/master/images/figma-inspiration.png?raw=true)
 
 3. Wireframe out the flow of the game on _Figma_, including the fun features and carve out what is the 'MVP' equivalent
 ![figma-wireframes](https://github.com/chai-ng/tic-tac-toe-jam/blob/master/images/wireframe-flow.png)
 
 4. Build the barebones logic and elements on the game, and style the bare minimum so that it's at least lookable
+![first-game-pass](https://github.com/chai-ng/tic-tac-toe-jam/blob/master/images/first-game-logic.png?raw=true)
 
 5. Don't hold back - start building out those fun features!
+![full-game-view](https://github.com/chai-ng/tic-tac-toe-jam/blob/master/images/full-game-view.png?raw=true)
 
 ### Technology used
+HTML
+CSS
+Javascript
 
 ## Installation instructions
 
@@ -79,9 +85,9 @@ For this part, it was really getting creative about the different features I cou
 I wanted to encourage people to be incentivised to play the game
 
 **A few of the twists I included:**
-1. Unlockable features and tokens\
-*I am a massive fan of game progressions, and am extremely motivated to 'complete the game' by unlocking everything there is*
+1. Customisable game setup with number of rounds, board size and player tokens\
+
 2. Undo and suggestion functions\
-*For those days that you just want to mindlessly get through this*
+
 3. 'Tetris' tic-tac-toe\
 *Inspired by the other classic childhood game, I wanted to combine the time-sensitive nature of tetris with this game, to increase the level of difficulty for the player*
