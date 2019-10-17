@@ -22,7 +22,7 @@ var btnSelectRight = document.querySelectorAll('.select-right');
 var btnSelectLeft = document.querySelectorAll('.select-left');
 
 // Customisation options
-var tokens = [1,-1,'X', 'O', '❌', '⭕️', '🤩', '🥳','😸','🐶'];
+var tokens = [1, -1, 'X', 'O', '❌', '⭕️', '🤩', '🥳', '😸', '🐶'];
 
 // Game variables
 var boardSize = Number(gameOptions[0].innerHTML);
@@ -77,7 +77,7 @@ var generateRound = function (boardSize) {
         for (var cell = 0; cell < boardSize; cell++) {
             var gameCell = document.createElement('div');
             gameCell.classList = 'game-cell';
-            gameCell.setAttribute('data-index',row*boardSize+cell);
+            gameCell.setAttribute('data-index', row * boardSize + cell);
             gameRow.appendChild(gameCell);
         }
         gameBoard.appendChild(gameRow);
@@ -217,11 +217,12 @@ var checkRows = function (currentBoard, storeResults = true) {
             }
             result = true;
         }
-        if (result && storeResults) {
-            // append the winning row and their cols into the winningSet array
-            for (var col = 0; col < boardSize; col++) {
-                var winningCell = [row, col];
-                winningSet.push(winningCell);
+        if (result) {
+            if (storeResults) {
+                for (var col = 0; col < boardSize; col++) {
+                    var winningCell = [row, col];
+                    winningSet.push(winningCell);
+                }
             }
             return result;
         }
@@ -244,11 +245,12 @@ var checkCols = function (currentBoard, storeResults = true) {
             }
             result = true;
         }
-        if (result && storeResults) {
-            // append the winning row and their cols into the winningSet array
-            for (var row = 0; row < boardSize; row++) {
-                var winningCell = [row, col];
-                winningSet.push(winningCell);
+        if (result) {
+            if (storeResults) {
+                for (var row = 0; row < boardSize; row++) {
+                    var winningCell = [row, col];
+                    winningSet.push(winningCell);
+                }
             }
             return result;
         }
@@ -281,7 +283,10 @@ var checkDiagonals = function (currentBoard, storeResults = true) {
         }
         return result;
     }
+    return result;
+}
 
+var checkReverseDiagonal = function (currentBoard, storeResults = true) {
     // B. Check for reverse diagonal bottom left to top right;
     for (var col = 0; col < boardSize; col++) {
         var row = boardSize - 1 - col;
@@ -304,7 +309,6 @@ var checkDiagonals = function (currentBoard, storeResults = true) {
         }
         return result;
     }
-
     return result;
 }
 
@@ -318,14 +322,14 @@ var highlightWin = function (coordinates) {
 
 // Master function
 var checkWin = function (currentBoard, storeResults = true) {
-    if (checkRows(currentBoard, storeResults) || checkCols(currentBoard, storeResults) || checkDiagonals(currentBoard,storeResults)) {
+    if (checkRows(currentBoard, storeResults) || checkCols(currentBoard, storeResults) || checkDiagonals(currentBoard, storeResults) || checkReverseDiagonal(currentBoard,storeResults)) {
         return true;
     } else {
         return false;
     }
 }
 
-var checkDraw = function(currentBoard) {
+var checkDraw = function (currentBoard) {
     if (isFilled(checkBoard())) {
         return true;
     }
@@ -350,11 +354,11 @@ var checkGameWinner = function () {
             }).length > winningPlayers.length / 2) {
             message.innerHTML += " Player 1 wins the game!"
         } else if (winningPlayers.filter(function (number) {
-            return number == 1;
-        }).length > winningPlayers.length / 2) {
+                return number == 1;
+            }).length > winningPlayers.length / 2) {
             message.innerHTML += " Player 2 wins the game!"
-        } else {           
-            message.innerHTML += " It's a draw!" 
+        } else {
+            message.innerHTML += " It's a draw!"
         }
         btnPlayAgain.innerHTML = 'Play again';
     }
@@ -419,26 +423,26 @@ btnPlayAgain.addEventListener('click', function () {
 // Min max Tic Tac Toe bot:
 var nextBestMove = function (currentBoard, depth, player, playerSolving) {
     // Initialise the return array, with players starting from their worse score, so that the 'best outcome' can be overridden by even a draw score
-    if (player == playerSolving) { 
+    // debugger;
+    if (player === playerSolving) {
         var best = [-1, -1, -99]; // Arbitrarily high number that can be overridden by a 'draw' = 0
     } else {
         var best = [-1, -1, 99];
     }
-    
+
     // If there is a winning condition, evaluate if that is a good or bad thing for the currentPlayer
-    if (checkWin(currentBoard, false) && player == playerSolving) {
-        // previous winning move was not amde by the player in this scenario, therefore has a negative impact on winning
-        // where the depth is 0
-        var score = boardSize+depth; 
+    if (checkWin(currentBoard, false) && player !== playerSolving) {
+        // previous winning move was made by the playerSolving, therefore creates a positive score to solve for
+        var score = boardSize + depth;
         return [-1, -1, score];
     } else if (checkWin(currentBoard, false)) {
-        var score = -boardSize-depth;
+        var score = -boardSize - depth;
         return [-1, -1, score];
-    } else if (checkDraw(currentBoard)) { // check for a draw
+    } else if (depth == 0) { // check for a draw
         var score = 0;
         return [-1, -1, score];
     }
-    
+
     // If there isn't a 'win' or a 'draw' keep looping through the empty cells
     var possibleMoves = emptyCells(currentBoard);
     // debugger;
@@ -447,17 +451,17 @@ var nextBestMove = function (currentBoard, depth, player, playerSolving) {
         var x = cell[0]
         var y = cell[1];
         currentBoard[x][y] = players[player].token;
-        var outcome = nextBestMove(currentBoard, depth - 1, Number(!player),playerSolving); // How to include current Player in this...
+        var outcome = nextBestMove(currentBoard, depth - 1, Number(!player), playerSolving); // How to include current Player in this...
         currentBoard[x][y] = ''; // undo the move
         outcome[0] = x;
         outcome[1] = y;
- 
+
         // If the player in this scenario is the same as the active player, then pick the outcome with the highest score, otherwise, pick 
-        if (player == playerSolving) {
+        if (player === playerSolving) {
             // Maximise, where you want to pick the highest possible score
             if (outcome[2] > best[2]) {
                 best = outcome;
-        }
+            }
         } else {
             // Minimise, because negative scores are how they win
             if (outcome[2] < best[2]) {
@@ -465,7 +469,7 @@ var nextBestMove = function (currentBoard, depth, player, playerSolving) {
             }
         }
     }
-    
+
     return best;
 }
 
@@ -494,35 +498,31 @@ var coordinatesToIndex = function (coordinates) {
     return index;
 }
 
-var undoMove = function() {
+var undoMove = function () {
     var prevMove = roundLog.pop();
     gameCells[prevMove].innerHTML = "";
     currentPlayer = Number(!currentPlayer);
+    whoseTurn();
 }
 
-var selectRandomCell = function() {
+var selectRandomCell = function () {
     var emptyCellArray = emptyCells(checkBoard());
     var randomCoordinates = emptyCellArray[Math.round(Math.random() * emptyCellArray.length)]
     gameCells[coordinatesToIndex(randomCoordinates)].classList.add('suggested-cell');
 }
 
-btnSuggestMove.addEventListener('click', selectRandomCell);
+// btnSuggestMove.addEventListener('click', selectRandomCell);
 
-// btnSuggestMove.addEventListener('click', function() {
-//     if (emptyCells(checkBoard()) === (boardSize * boardSize)) {
-//         selectRandomCell();
-//         return;
-//     }
-//     var coordinates = nextBestMove(checkBoard(),emptyCells(checkBoard()).length,currentPlayer,currentPlayer);
-//     console.log(coordinates);
-//     if (coordinates[0] === -1) {
-//         selectRandomCell();
-//         return;
-//     } else {
-//         coordinates.pop();
-//         var index = coordinatesToIndex(coordinates);
-//         gameCells[index].classList.add('suggested-cell');
-//     }
-// })
+btnSuggestMove.addEventListener('click', function () {
+    var coordinates = nextBestMove(checkBoard(), emptyCells(checkBoard()).length, currentPlayer, currentPlayer);
+    console.log(coordinates);
+    coordinates.pop();
+    var index = coordinatesToIndex(coordinates);
+    if (index >= 0) {
+        gameCells[index].classList.add('suggested-cell');
+    } else {
+        selectRandomCell();
+    }
+})
 
 btnUndoMove.addEventListener('click', undoMove);
