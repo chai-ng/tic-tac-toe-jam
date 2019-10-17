@@ -3,6 +3,7 @@
 var gameBoard = document.querySelector('.gameboard');
 var gameCells = document.querySelectorAll('.game-cell');
 var playerProfiles = document.querySelectorAll('.player-profile');
+var playerTokens = document.querySelectorAll('.player-token');
 var modal = document.querySelector('.modal');
 var modalHeader = document.querySelector('.modal-header');
 var modalParagraph = document.querySelector('.modal-paragraph');
@@ -18,7 +19,10 @@ var btnPlayAgain = document.querySelector('.btn-play-again');
 var btnSelectRight = document.querySelectorAll('.select-right');
 var btnSelectLeft = document.querySelectorAll('.select-left');
 
-// 
+// Customisation options
+var tokens = ['X', 'O', '❌', '⭕️', '🤩', '🥳'];
+
+// Game variables
 var boardSize = Number(gameOptions[0].innerHTML);
 var board = [];
 var rounds = Number(gameOptions[1].innerHTML);
@@ -45,6 +49,9 @@ var generateGame = function() {
     roundWinners = [];
     players[0].token = gameOptions[2].innerHTML;
     players[1].token = gameOptions[3].innerHTML;
+    playerTokens.forEach(function(x, i) {
+        x.innerHTML = players[i].token;
+    })
     generateCounter();
 }
 
@@ -332,7 +339,7 @@ var checkGameWinner = function () {
     }
 }
 
-// Allow players to change the number of rounds
+// Allow players to change the number of rounds and board size
 var plusOne = function (event) {
     event.target.previousElementSibling.innerHTML = Number(event.target.previousElementSibling.innerHTML) + 1;
 }
@@ -341,13 +348,38 @@ var minusOne = function (event) {
     event.target.nextElementSibling.innerHTML = Number(event.target.nextElementSibling.innerHTML) - 1;
 }
 
-btnSelectRight.forEach(function (x) {
-    x.addEventListener('click', plusOne);
-})
+// Allow players to change their token
+var upToken = function (event) {
+    var tokenIndex = tokens.indexOf(event.target.previousElementSibling.innerHTML);
+    if (tokenIndex < tokens.length-1) {
+        event.target.previousElementSibling.innerHTML = tokens[tokenIndex+1];
+    }
+}
 
-btnSelectLeft.forEach(function (x) {
-    x.addEventListener('click', minusOne);
-})
+var downToken = function (event) {
+    var tokenIndex = tokens.indexOf(event.target.nextElementSibling.innerHTML);
+    if (tokenIndex > 0) {
+        event.target.nextElementSibling.innerHTML = tokens[tokenIndex-1];
+    }
+}
+
+btnSelectRight[0].addEventListener('click', plusOne);
+btnSelectRight[1].addEventListener('click', plusOne);
+btnSelectLeft[0].addEventListener('click', minusOne);
+btnSelectLeft[1].addEventListener('click', minusOne);
+
+btnSelectRight[2].addEventListener('click', upToken);
+btnSelectRight[3].addEventListener('click', upToken);
+btnSelectLeft[2].addEventListener('click', downToken);
+btnSelectLeft[3].addEventListener('click', downToken);
+
+// btnSelectRight.forEach(function (x) {
+//     x.addEventListener('click', plusOne);
+// })
+
+// btnSelectLeft.forEach(function (x) {
+//     x.addEventListener('click', minusOne);
+// })
 
 btnNewGame.addEventListener('click', function () {
     generateGame();
@@ -356,7 +388,6 @@ btnNewGame.addEventListener('click', function () {
 });
 
 btnExitGame.addEventListener('click', function () {
-    generateRound(boardSize);
     openModal();
 })
 
