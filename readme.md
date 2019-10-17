@@ -24,7 +24,7 @@ I wanted to re-invent the classic tic-tac-toe game, and add in a few cool new fe
 4. Build the barebones logic and elements on the game, and style the bare minimum so that it's at least lookable
 ![first-game-pass](https://github.com/chai-ng/tic-tac-toe-jam/blob/master/images/first-game-logic.png?raw=true)
 
-5. Don't hold back - start building out those fun features!
+5. Don't hold back - start building out those fun features!\
 ![full-game-view](https://github.com/chai-ng/tic-tac-toe-jam/blob/master/images/full-game-view.png?raw=true)
 
 ### Technology used
