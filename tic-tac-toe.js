@@ -23,8 +23,8 @@ var btnSelectRight = document.querySelectorAll('.select-right');
 var btnSelectLeft = document.querySelectorAll('.select-left');
 
 // Customisation options
-var tokens = [1, -1, 'X', 'O', '❌', '⭕️', '🤩', '🥳', '😸', '🐶'];
-var types = ['&#x1F64B','&#x1F47E'];
+var tokens = ['X', 'O', '❌', '⭕️', '🤩', '🥳', '😸', '🐶'];
+var types = ['&#x1F64B', '&#x1F47E']; // human and bot
 
 // Game variables
 var boardSize = Number(gameOptions[0].innerHTML);
@@ -51,15 +51,19 @@ var players = [{
 
 // 1. Generate game board based on settings (gameboard size, token, number of rounds)
 var generateGame = function () {
+    boardSize = Number(gameOptions[0].innerHTML);
     rounds = Number(gameOptions[1].innerHTML);
     currentRound = -1;
     winningPlayers = [];
     players[0].token = gameOptions[2].innerHTML;
     players[1].token = gameOptions[3].innerHTML;
+    players[0].type = toUni(gameOptions[4].innerHTML);
+    players[1].type = toUni(gameOptions[5].innerHTML);
+
     playerTokens.forEach(function (x, i) {
         x.innerHTML = players[i].token;
     })
-    playerTypes.forEach(function(x,i) {
+    playerTypes.forEach(function (x, i) {
         x.innerHTML = players[i].type;
     })
     generateCounter();
@@ -137,14 +141,14 @@ var determineOrder = function () {
     whoseTurn();
 }
 
-// Keep track of who's turn is it and highlight the user
+// Keep track of who's turn is it, highlight the user and execute the botToken if it's their turn
 var whoseTurn = function () {
     playerProfiles[currentPlayer].classList.add('current-player');
     playerProfiles[Number(!currentPlayer)].classList.remove('current-player');
 
     // If the player is a bot player, then run the insertToken for a given coordinate
     if (players[currentPlayer].type == '&#x1F47E') {
-        setTimeout(botToken, 2000);
+        setTimeout(botToken, 1500);
     }
 }
 
@@ -179,7 +183,7 @@ var emptyCells = function (currentBoard) {
 }
 
 // Evaluate the move, if it results in a win or draw, or next turn
-var evaluateMove = function() {
+var evaluateMove = function () {
     if (checkWin(checkBoard())) {
         winningPlayers.push(currentPlayer);
         winningSet.forEach(highlightWin);
@@ -195,11 +199,11 @@ var evaluateMove = function() {
     } else {
         currentPlayer = Number(!currentPlayer);
         whoseTurn();
-    } 
+    }
 }
 
 // If there is a 'suggested-cell' then unselect it on the board, regardless if user selected
-var unsuggestCell = function() {
+var unsuggestCell = function () {
     if (document.querySelector('.suggested-cell') != null) {
         document.querySelector('.suggested-cell').classList.remove('suggested-cell');
     }
@@ -207,14 +211,19 @@ var unsuggestCell = function() {
 
 // 3. Insert a token where the user has clicked
 var insertToken = function (event) {
+    // Check if the current player is a bot, block the human from making a turn
+    if (players[currentPlayer].type == '&#x1F47E') {
+        message.innerHTML = "It's not your turn yet!";
+        return;
+    }
     // Check if empty before allowing to insert element
     if (isEmpty(event.target.innerHTML)) {
         // Insert token and store in the gamelog, refresh message
         event.target.innerHTML = players[currentPlayer].token;
         roundLog.push(event.target.getAttribute('data-index'));
+        
+        // De-select the suggested cell and clear the message
         message.innerHTML = '';
-
-        // De-select the suggested cell
         unsuggestCell();
 
         // Check for win conditions
@@ -225,7 +234,7 @@ var insertToken = function (event) {
 }
 
 // Bot action to insertToken based on next best move coordinates converted into an index
-var botToken = function() {
+var botToken = function () {
     // Find the index of the next best move
     var coordinates = nextBestMove(checkBoard(), emptyCells(checkBoard()).length, currentPlayer, currentPlayer);
     coordinates.pop();
@@ -234,7 +243,7 @@ var botToken = function() {
     // Insert the bot's token in there and store in roundLog
     gameCells[index].innerHTML = players[currentPlayer].token;
     roundLog.push(gameCells[index].getAttribute('data-index'));
-    
+
     // De-select suggested cell
     message.innerHTML = '';
     unsuggestCell();
@@ -379,7 +388,7 @@ var highlightWin = function (coordinates) {
 
 // Master win condition function to check if any of the win conditions are fulfilled
 var checkWin = function (currentBoard, storeResults = true) {
-    if (checkRows(currentBoard, storeResults) || checkCols(currentBoard, storeResults) || checkDiagonals(currentBoard, storeResults) || checkReverseDiagonal(currentBoard,storeResults)) {
+    if (checkRows(currentBoard, storeResults) || checkCols(currentBoard, storeResults) || checkDiagonals(currentBoard, storeResults) || checkReverseDiagonal(currentBoard, storeResults)) {
         return true;
     } else {
         return false;
@@ -415,30 +424,6 @@ var checkGameWinner = function () {
             message.innerHTML += " It's a draw!"
         }
         btnPlayAgain.innerHTML = 'Play again';
-    }
-}
-
-// Allow players to change the number of rounds and board size
-var plusOne = function (event) {
-    event.target.previousElementSibling.innerHTML = Number(event.target.previousElementSibling.innerHTML) + 1;
-}
-
-var minusOne = function (event) {
-    event.target.nextElementSibling.innerHTML = Number(event.target.nextElementSibling.innerHTML) - 1;
-}
-
-// Allow players to change their token
-var upToken = function (event) {
-    var tokenIndex = tokens.indexOf(event.target.previousElementSibling.innerHTML);
-    if (tokenIndex < tokens.length - 1) {
-        event.target.previousElementSibling.innerHTML = tokens[tokenIndex + 1];
-    }
-}
-
-var downToken = function (event) {
-    var tokenIndex = tokens.indexOf(event.target.nextElementSibling.innerHTML);
-    if (tokenIndex > 0) {
-        event.target.nextElementSibling.innerHTML = tokens[tokenIndex - 1];
     }
 }
 
@@ -520,9 +505,60 @@ var selectRandomCell = function () {
     gameCells[coordinatesToIndex(randomCoordinates)].classList.add('suggested-cell');
 }
 
-// When initialising the game, check if the player is a human or bot
-// If player is a bot, then whenever it is their turn using the whoseTurn(); 
-// Let their 'insertToken' be the coordinates from the nextBestMove function (delay for 1 or 2 seconds)
+// Allow players to change the number of rounds and board size
+var plusOne = function (event) {
+    event.target.previousElementSibling.innerHTML = Number(event.target.previousElementSibling.innerHTML) + 1;
+}
+
+var minusOne = function (event) {
+    event.target.nextElementSibling.innerHTML = Number(event.target.nextElementSibling.innerHTML) - 1;
+}
+
+// Allow players to change their token
+var upArray = function (event, customisationArray, convertEmoji = false) {
+    var str = event.target.previousElementSibling.innerHTML;
+    
+    // Convert emoji into a string if true
+    if (convertEmoji) {
+        str = toUni(str);
+    }
+
+    var arrayIndex = customisationArray.indexOf(str);
+    // Return the next up, if at the very end of the array, loop back to the start
+    if (arrayIndex < customisationArray.length - 1) {
+        event.target.previousElementSibling.innerHTML = customisationArray[arrayIndex + 1];
+    } else {
+        event.target.previousElementSibling.innerHTML = customisationArray[0];
+    }
+}
+
+var downArray = function (event, customisationArray, convertEmoji = false) {
+    var str = event.target.nextElementSibling.innerHTML;
+    
+    // Convert emoji into a string if true
+    if (convertEmoji) {
+        str = toUni(str);
+    }
+
+    var arrayIndex = customisationArray.indexOf(str);
+    // Return the next up, if at the very start of the array, loop back to the end
+    if (arrayIndex > 0) {
+        event.target.nextElementSibling.innerHTML = customisationArray[arrayIndex - 1];
+    } else {
+        event.target.nextElementSibling.innerHTML = customisationArray[customisationArray.length-1];
+    }
+}
+
+var toUni = function (emoji) {
+    if (emoji.length < 4) {
+        var output = emoji.codePointAt(0).toString(16).toUpperCase();
+        output = '&#x' + output;
+        return output;
+    }
+    var output = emoji.codePointAt(0).toString(16) + '-' + emoji.codePointAt(2).toString(16);
+    output = '&#x' + output;
+    return output;
+};
 
 btnSuggestMove.addEventListener('click', function () {
     var coordinates = nextBestMove(checkBoard(), emptyCells(checkBoard()).length, currentPlayer, currentPlayer);
@@ -537,16 +573,6 @@ btnSuggestMove.addEventListener('click', function () {
 })
 
 btnUndoMove.addEventListener('click', undoMove);
-
-btnSelectRight[0].addEventListener('click', plusOne);
-btnSelectRight[1].addEventListener('click', plusOne);
-btnSelectLeft[0].addEventListener('click', minusOne);
-btnSelectLeft[1].addEventListener('click', minusOne);
-
-btnSelectRight[2].addEventListener('click', upToken);
-btnSelectRight[3].addEventListener('click', upToken);
-btnSelectLeft[2].addEventListener('click', downToken);
-btnSelectLeft[3].addEventListener('click', downToken);
 
 btnNewGame.addEventListener('click', function () {
     generateGame();
@@ -569,3 +595,37 @@ btnPlayAgain.addEventListener('click', function () {
     message.innerHTML = "";
     btnPlayAgain.style.display = 'none';
 })
+
+// Select the board size and number of rounds
+btnSelectRight[0].addEventListener('click', plusOne);
+btnSelectRight[1].addEventListener('click', plusOne);
+btnSelectLeft[0].addEventListener('click', minusOne);
+btnSelectLeft[1].addEventListener('click', minusOne);
+
+// Selecting the tokens to use
+btnSelectRight[2].addEventListener('click', function () {
+    upArray(event, tokens);
+});
+btnSelectRight[3].addEventListener('click', function () {
+    upArray(event, tokens);
+});
+btnSelectLeft[2].addEventListener('click', function () {
+    downArray(event, tokens);
+});
+btnSelectLeft[3].addEventListener('click', function () {
+    downArray(event, tokens);
+});
+
+// Selecting if human or bot player
+btnSelectRight[4].addEventListener('click', function () {
+    upArray(event, types, true);
+});
+btnSelectRight[5].addEventListener('click', function () {
+    upArray(event, types, true);
+});
+btnSelectLeft[4].addEventListener('click', function () {
+    downArray(event, types, true);
+});
+btnSelectLeft[5].addEventListener('click', function () {
+    downArray(event, types, true);
+});
