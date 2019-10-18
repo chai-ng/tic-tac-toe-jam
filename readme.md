@@ -41,6 +41,10 @@ Navigate to my site to play this: [Chai's tic tac toe](https://chai-ng.github.io
 - 'Dark mode' and customisable backgrounds
 
 ## Challenges and lessons learnt
+1. Challenges with adding functionality, balancing being MVP / Agile vs. spending more time planning to create flexible functions
+2. Leveraging existing people's thinking, and adapting your code to it forces you deep into the logic land
+3. Project planning and prioritisaiton really helped me to keep focus, while knowing I have a place to jot down, organise and prioritise my ideas (challenge: My ideas were still scattered over oneNote, notebooks, trello, readme and figma)
+4. Debugging and knowing your test cases well are skills for life
 
 ## Appendix: Project approach phase
 ### Phase 1: Build the basic logic for a single round, two humans

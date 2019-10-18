@@ -562,7 +562,6 @@ var toUni = function (emoji) {
 
 btnSuggestMove.addEventListener('click', function () {
     var coordinates = nextBestMove(checkBoard(), emptyCells(checkBoard()).length, currentPlayer, currentPlayer);
-    console.log(coordinates);
     coordinates.pop();
     var index = coordinatesToIndex(coordinates);
     if (index >= 0) {
