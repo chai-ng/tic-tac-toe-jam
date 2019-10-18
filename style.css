@@ -12,14 +12,16 @@ body {
     margin: 0;
     padding: 0;
     font-size: 110%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 main {
     width: 100%;
-    height: 100%;
+    flex-grow: 1;
     display: flex;
     justify-content: center;
-    height: 75vh;
     z-index: 0;
 }
 
@@ -29,7 +31,7 @@ main {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 10%;
+    padding: 5%;
 }
 
 .game-cell {
@@ -88,7 +90,7 @@ main {
 .players {
     font-size: 3vh;
     display: flex;
-    height: 10vh;
+    height: fit-content;
     align-items: center;
     justify-content: space-between;
 }
@@ -128,10 +130,9 @@ main {
 }
 
 .bottom-bar {
-    position: relative;
     width: 100%;
-    height: 15vh;
-    bottom: 0;
+    padding: 5vh 5vw;
+    height: fit-content;
 
     display: flex;
     flex-direction: column;
@@ -228,13 +229,6 @@ main {
     flex-wrap: wrap;
 }
 
-@media only screen and (max-width: 768px) {
-    .options {
-        width: 40%;
-        padding: 15px;
-    }
-}
-
 .option {
     display: flex;
     justify-content: center;
@@ -300,9 +294,8 @@ main {
 
 .btn-play-again {
     display: none;
-    margin: 0px auto;
-    width: 20%;
-    height: 70%;
+    margin: 0 3vw;
+    height: fit-content;
     z-index: 3;
 }
 
@@ -313,4 +306,25 @@ button {
     border: none;
     background-color: transparent;
     outline: none;
+}
+
+@media only screen and (max-device-width: 400px)  {
+    .options {
+        width: 40%;
+        padding: 15px;
+    }
+
+    .players {
+        flex-wrap: wrap;
+    }
+
+    .main {
+        height: 30%;
+    }
+    .btn-play-again {
+        width: 60%;
+        margin: 1vh 4vw;
+        order: -1;
+        flex-grow: 1;
+    }
 }

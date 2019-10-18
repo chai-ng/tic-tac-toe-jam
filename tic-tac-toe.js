@@ -221,7 +221,7 @@ var insertToken = function (event) {
         // Insert token and store in the gamelog, refresh message
         event.target.innerHTML = players[currentPlayer].token;
         roundLog.push(event.target.getAttribute('data-index'));
-        
+
         // De-select the suggested cell and clear the message
         message.innerHTML = '';
         unsuggestCell();
@@ -517,7 +517,7 @@ var minusOne = function (event) {
 // Allow players to change their token
 var upArray = function (event, customisationArray, convertEmoji = false) {
     var str = event.target.previousElementSibling.innerHTML;
-    
+
     // Convert emoji into a string if true
     if (convertEmoji) {
         str = toUni(str);
@@ -534,7 +534,7 @@ var upArray = function (event, customisationArray, convertEmoji = false) {
 
 var downArray = function (event, customisationArray, convertEmoji = false) {
     var str = event.target.nextElementSibling.innerHTML;
-    
+
     // Convert emoji into a string if true
     if (convertEmoji) {
         str = toUni(str);
@@ -545,7 +545,7 @@ var downArray = function (event, customisationArray, convertEmoji = false) {
     if (arrayIndex > 0) {
         event.target.nextElementSibling.innerHTML = customisationArray[arrayIndex - 1];
     } else {
-        event.target.nextElementSibling.innerHTML = customisationArray[customisationArray.length-1];
+        event.target.nextElementSibling.innerHTML = customisationArray[customisationArray.length - 1];
     }
 }
 

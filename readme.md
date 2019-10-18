@@ -1,4 +1,4 @@
-# ❌⭕️ Tic Tac Toe Jam! ❌⭕️
+# Tic Tac Toe Jam!
 
 ## Introduction
 Hello! As part of my General Assembly Software Engineering Immersive, our first assignment is to build a Tic Tac Toe game.
@@ -28,15 +28,19 @@ I wanted to re-invent the classic tic-tac-toe game, and add in a few cool new fe
 ![full-game-view](https://github.com/chai-ng/tic-tac-toe-jam/blob/master/images/full-game-view.png?raw=true)
 
 ### Technology used
-HTML
-CSS
-Javascript
+HTML: The usual semantics
+CSS: Animations and responsive sizing using viewport heights and widths;
+Javascript: Javascript arrays, objects and recursive algorithms
 
 ## Installation instructions
-
 Navigate to my site to play this: [Chai's tic tac toe](https://chai-ng.github.io/tic-tac-toe-jam/)
 
 ## Backlog of features
+- 'Falling' tic tac toe
+- Including some sick Minecraft background music to set the mood
+- 'Dark mode' and customisable backgrounds
+
+## Challenges and lessons learnt
 
 ## Appendix: Project approach phase
 ### Phase 1: Build the basic logic for a single round, two humans
@@ -75,22 +79,18 @@ Style would be 3D minimalist.
 The CSS features I wanted to include were:
 - Gradient background
 - Dynamically generated size of CSS boxes
-- Beautiful buttons
 - Mobile-friendly design
 - Microinteractions when clicking or hovering over parts of the game
 
 ### Phase 3: Make it mine
 For this part, it was really getting creative about the different features I could build to put my personal twist on tic-tac-toe.
 
-I wanted to encourage people to be incentivised to play the game
-
 **A few of the twists I included:**
-1. Customisable game setup with number of rounds, board size and player tokens\
+1. Customisable game setup with number of rounds, board size, player tokens and whether the players are humans or bots
 
-2. Undo and suggestion functions\
+2. Undo and suggestion functions as 'cheats' for the player (aka my debugging)
 
-3. 'Tetris' minMax bot\
-References:
-- https://github.com/Cledersonbc/tic-tac-toe-minimax/blob/master/README.md
-- https://medium.com/@alialaa/tic-tac-toe-with-javascript-es2015-ai-player-with-minimax-algorithm-59f069f46efa?source=bookmarks---------0-----------------------
-- 
+3. 'Tetris' bot using the minmax algorithm
+No credit taken here and below were the two most helpful articles in building this.
+- [Tic-Tac-Toe MiniMax by Cledersonbc](https://github.com/Cledersonbc/tic-tac-toe-minimax/blob/master/README.md)
+- [Tic-Tac-Toe with Javascript](https://medium.com/@alialaa/tic-tac-toe-with-javascript-es2015-ai-player-with-minimax-algorithm-59f069f46efa)
